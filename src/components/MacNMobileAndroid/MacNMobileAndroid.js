@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import getApi from "../../api/api.js";
 import AlertComponent from "../AlertComponent/AlertComponent";
 import Contents from "../Contents/Contents";
+import FilesProcessor from "../FilesProcessor/FilesProcessor";
 
 function MacNMobileAndroid({ setSource }) {
   const [connected, setConnected] = useState(false);
@@ -18,7 +19,6 @@ function MacNMobileAndroid({ setSource }) {
 
   const getDevices = async () => {
     const devices = await getApi("macNMobileAndroid/getDevices/");
-    console.log(devices);
     if (!devices) {
       setError({
         header: "Error",
@@ -31,7 +31,6 @@ function MacNMobileAndroid({ setSource }) {
     setDeviceDetails(() => devices[1] + " " + devices[2]);
   };
   useEffect(() => {
-    console.log(deviceDetails);
     if (!connected || deviceDetails) return;
     getDevices();
   });
@@ -41,26 +40,41 @@ function MacNMobileAndroid({ setSource }) {
       <Box sx={boxStyle}>
         <Paper sx={{ ...paperStyle }}>
           <div>
-            Please connect mobile to the computer , enable file transfer and
-            click the button below
-            <br />
-            <br />
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <Button
-                variant="outlined"
-                size="small"
-                onClick={() => setConnected(true)}
-              >
-                Connected
-              </Button>
-              <Button
-                variant="outlined"
-                size="small"
-                onClick={() => setSource(null)}
-              >
-                RESET
-              </Button>
-            </div>
+            {
+              <div>
+                {!connected && (
+                  <div>
+                    Please connect mobile to the computer , enable file transfer
+                    and click the button below
+                    <br />
+                    <br />
+                  </div>
+                )}
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: connected ? "center" : "space-between",
+                  }}
+                >
+                  {!connected && (
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() => setConnected(true)}
+                    >
+                      Connected
+                    </Button>
+                  )}
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() => setSource(null)}
+                  >
+                    RESET
+                  </Button>
+                </div>
+              </div>
+            }
             <br />
             {error && (
               <AlertComponent

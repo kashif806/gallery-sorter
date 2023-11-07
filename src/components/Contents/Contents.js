@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from "react";
 import getApi from "../../api/api";
-import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
+import FilesProcessor from "../FilesProcessor/FilesProcessor";
 
 function Contents({ path, setPath }) {
   const [contents, setContents] = useState(null);
+  const [processFiles, setProcessFiles] = useState(false);
 
   const getContents = async () => {
-    console.log("getting content");
     const content = await getApi(
       `macNMobileAndroid/getPathContent?path=${path.replace(/ /g, "%20")}/`
     );
-    console.log(content);
-    // setContents(content.replace(/\n/g, "<br>"));
     setContents(content);
   };
 
@@ -26,86 +23,112 @@ function Contents({ path, setPath }) {
   };
 
   return (
-    <div>
-      {/* <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          "& > :not(style)": {
-            m: 1,
-            minWidth: "80%",
-          },
-          marginLeft: "auto",
-          marginTop: "50px",
-        }}
-      > */}
+    <div
+      style={{
+        padding: "1em",
+        display: "flex",
+        flexDirection: "column",
+        border: "3px solid cadetblue",
+        borderRadius: "10px",
+        height: " 50vh",
+        position: "relative",
+      }}
+    >
       <div
         style={{
-          padding: "1em",
           display: "flex",
-          flexDirection: "column",
-          border: "3px solid cadetblue",
-          borderRadius: "10px",
-          height: " 50vh",
-          position: "relative",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          position: "sticky",
+          top: 0,
         }}
       >
-        {/* <Paper elevation={24}> */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            position: "sticky",
-            top: 0,
-          }}
-        >
-          <h5
-            style={{
-              color: "dodgerblue",
-              fontWeight: "bolder",
-            }}
-          >
-            Path : <span style={{ color: "tomato" }}>{path}</span>
-          </h5>
-          <button
-            style={{
-              border: "none",
-              background: "none",
-              textDecoration: "underline",
-            }}
-            onClick={() => {
-              setPath((path) =>
-                path.includes("/") ? path.slice(0, path.lastIndexOf("/")) : path
-              );
-            }}
-          >
-            &larr; Back
-          </button>
-        </div>
-
         <h5
           style={{
             color: "dodgerblue",
             fontWeight: "bolder",
-            alignSelf: "center",
           }}
         >
-          Contents
+          Path : <span style={{ color: "tomato" }}>{path}</span>
         </h5>
-        <div
-          style={{ display: "flex", flexDirection: "column", overflow: "auto" }}
+        <button
+          style={{
+            border: "none",
+            background: "none",
+            textDecoration: "underline",
+            cursor: "pointer",
+          }}
+          disabled={!path.includes("/") || processFiles}
+          onClick={() => {
+            setPath((path) =>
+              path.includes("/") ? path.slice(0, path.lastIndexOf("/")) : path
+            );
+          }}
         >
-          <div>
-            {contents &&
-              contents.map((c) => (
-                <DisplayContent content={c} onFolderClick={onFolderClick} />
-              ))}
+          &larr; Back
+        </button>
+      </div>
+
+      <h3
+        style={{
+          color: "dodgerblue",
+          fontWeight: "bolder",
+          alignSelf: "center",
+        }}
+      >
+        {processFiles ? "Files Processor" : "Contents"}
+      </h3>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          height: "83%",
+        }}
+      >
+        {!processFiles ? (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              overflow: "auto",
+            }}
+          >
+            <div>
+              {contents &&
+                contents.map((c) => (
+                  <DisplayContent content={c} onFolderClick={onFolderClick} />
+                ))}
+            </div>
           </div>
-          {/* </ul> */}
-        </div>
-        {/* </Paper> */}
+        ) : (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              overflow: "auto",
+            }}
+          >
+            {processFiles && <FilesProcessor contents={contents} path={path} />}
+          </div>
+        )}
+        <button
+          style={{
+            marginTop: "20px",
+            width: "fit-content",
+            alignSelf: "center",
+            fontSize: "1.1em",
+            background: "none",
+            border: "1px solid dodgerblue",
+            borderRadius: "10px",
+            cursor: "pointer",
+          }}
+          onClick={() => setProcessFiles((p) => !p)}
+        >
+          {!processFiles
+            ? "Process files in this folder"
+            : "Go back to selecting Folder"}
+        </button>
       </div>
     </div>
   );
