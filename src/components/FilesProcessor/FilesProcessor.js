@@ -50,7 +50,13 @@ function FilesProcessor({ contents, path }) {
     <div
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
     >
-      {pickPath && <CopyConfirmation path={path} setPickPath={setPickPath} />}
+      {pickPath && (
+        <CopyConfirmation
+          path={path}
+          setPickPath={setPickPath}
+          filesInfo={filesInfo}
+        />
+      )}
       {processing && (
         <div style={{ marginTop: "30%" }}>
           <CircularProgress color="success" />

@@ -1,17 +1,29 @@
 import React, { useState } from "react";
+import FilesInfo from "../FilesInfo/FilesInfo";
+import TextField from "@mui/material/TextField";
+import FormControl from "@mui/material/FormControl";
+import { Button } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
 function CopyConfirmation({ path, setPickPath }) {
   const [movingPath, setMovingPath] = useState({
     currentPath: path,
     levels: [],
   });
+  const [folderName, setFolderName] = useState(
+    "sorted " + movingPath.currentPath.split("/").pop().toString() + " files"
+  );
+
+  const copyingPath = () => movingPath.currentPath + "/" + folderName;
+
   const ANDROID_LAST_LEVEL = "sdcard";
 
   const buttonStyle = {
     background: "lightblue",
     border: "1px solid",
     cursor: "pointer",
-    // marginTop: "20px",
     padding: "5px",
     height: "30px",
     width: "30px",
@@ -29,7 +41,6 @@ function CopyConfirmation({ path, setPickPath }) {
         background: "whitesmoke",
       }}
     >
-      {console.log(movingPath)}
       <div>Select Where you want the sorted files to be copied:</div>
       <div
         style={{
@@ -49,7 +60,7 @@ function CopyConfirmation({ path, setPickPath }) {
         >
           {movingPath.currentPath}
         </div>
-        <button
+        <IconButton
           onClick={() => {
             let pathArray = movingPath.currentPath.split("/");
             const currentFolder = pathArray.pop();
@@ -58,12 +69,13 @@ function CopyConfirmation({ path, setPickPath }) {
               levels: [...path.levels, currentFolder],
             }));
           }}
-          style={buttonStyle}
           disabled={movingPath.currentPath == ANDROID_LAST_LEVEL}
+          color="primary"
+          aria-label="add an alarm"
         >
-          &darr;
-        </button>
-        <button
+          <ArrowDownwardIcon />
+        </IconButton>
+        <IconButton
           onClick={() => {
             const newPath =
               movingPath.currentPath +
@@ -77,14 +89,45 @@ function CopyConfirmation({ path, setPickPath }) {
             }));
           }}
           disabled={movingPath.levels.length === 0}
-          style={buttonStyle}
+          color="primary"
+          aria-label="add an alarm"
         >
-          &uarr;
-        </button>
+          <ArrowUpwardIcon />
+        </IconButton>
       </div>
-      <div>
-        <button>Start</button>
-        <button onClick={() => setPickPath(false)}>Go Back</button>
+      <div style={{ width: "50%" }}>
+        {console.log(folderName)}
+        {/* Name of the main folder created at selected Path */}
+        <FormControl fullWidth sx={{ m: 1 }}>
+          <TextField
+            id="outlined-helperText"
+            label="Name of the main folder created at selected Path"
+            defaultValue={
+              "sorted " +
+              movingPath.currentPath.split("/").pop().toString() +
+              " files"
+            }
+            helperText="Some important text"
+            onChange={({ target: { value } }) => setFolderName(value)}
+          />
+        </FormControl>
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-around" }}>
+        <Button
+          variant="outlined"
+          color="success"
+          onClick={() => console.log(copyingPath())}
+          disabled={folderName === ""}
+        >
+          Start
+        </Button>
+        <Button
+          variant="outlined"
+          color="error"
+          onClick={() => setPickPath(false)}
+        >
+          GO Back
+        </Button>
       </div>
     </div>
   );
