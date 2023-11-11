@@ -7,6 +7,7 @@ const { explorer } = require("./fileExplorer.js");
 const { process } = require("./sort.js");
 const { commands } = require("./macNmobileAndroid.js");
 const { parseLsOutput } = require("./helpers/helpers.js");
+const { getFoldersAndFiles } = require("./helpers/helpers.js");
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -45,6 +46,28 @@ app.get("/macNMobileAndroid/getPathContent", async (req, res, next) => {
   const path = req.query.path;
   const content = await commands.getContent(path);
   res.json(parseLsOutput(content));
+});
+app.post("/macNMobileAndroid/copyFiles", async (req, res, next) => {
+  const path = req.body.path;
+  const folderName = req.body.folderName;
+  const movingPath = req.body.movingPath;
+  const filesInfo = req.body.filesInfo;
+
+  const foldersToBeCreated = getFoldersAndFiles(
+    filesInfo,
+    path,
+    movingPath,
+    folderName
+  );
+  console.log(foldersToBeCreated);
+
+  // const foldersCreated = await createFolders();
+  //create Folder
+  // const createMainFolder = await commands.createFolder(movingPath, folderName);
+  //create year and month folders
+
+  // console.log({ filesInfo, movingPath, folderName, path });
+  // res.json(createFolder);
 });
 
 const getFiles = async () => {};
