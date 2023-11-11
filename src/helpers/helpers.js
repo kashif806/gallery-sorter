@@ -41,11 +41,10 @@ export const getOS = () => {
 export const isValidDate = (str) => {
   if (!str) return false;
   // Regular expression to match "YYYYMMDD" dates
-  const datePattern = /(\D|^)(\d{8})(\D|$)/g;
+  const datePattern = /(\D|^)?(\d{8})(\D|$)/g;
 
   // Extract the potential date part from the string (YYYYMMDD)
   const dateMatch = datePattern.exec(str);
-
   if (!dateMatch || !dateMatch[2]) {
     return false; // No valid date found in the string
   }
@@ -54,7 +53,7 @@ export const isValidDate = (str) => {
 
   // Check if the potential date is a valid date
   const year = parseInt(fileDate.substring(0, 4), 10);
-  const month = parseInt(fileDate.substring(4, 6), 10);
+  const month = parseInt(fileDate.substring(4, 6), 10) - 1;
   const day = parseInt(fileDate.substring(6, 8), 10);
 
   // Use Date constructor to validate the date

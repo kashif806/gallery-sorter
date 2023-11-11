@@ -19,7 +19,7 @@ function FilesProcessor({ contents, path }) {
           const fileDate = isValidDate(file);
           if (fileDate) {
             const year = fileDate[0];
-            const month = months[fileDate[1]];
+            const month = months[fileDate[1] + 1];
             const day = fileDate[2];
             acc.noOfFiles++;
             if (!(year in acc.foldersToBeCreated)) {

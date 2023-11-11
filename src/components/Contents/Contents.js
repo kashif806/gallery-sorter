@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import getApi from "../../api/api";
+import { getApi } from "../../api/api";
 import FilesProcessor from "../FilesProcessor/FilesProcessor";
 
 function Contents({ path, setPath }) {

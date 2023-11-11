@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import FilesInfo from "../FilesInfo/FilesInfo";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 import { Button } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import { postApi } from "../../api/api";
 
-function CopyConfirmation({ path, setPickPath }) {
+function CopyConfirmation({ path, setPickPath, filesInfo }) {
   const [movingPath, setMovingPath] = useState({
     currentPath: path,
     levels: [],
@@ -15,19 +15,26 @@ function CopyConfirmation({ path, setPickPath }) {
   const [folderName, setFolderName] = useState(
     "sorted " + movingPath.currentPath.split("/").pop().toString() + " files"
   );
+  const [disableStart, setDisableStart] = useState(false);
 
   const copyingPath = () => movingPath.currentPath + "/" + folderName;
 
   const ANDROID_LAST_LEVEL = "sdcard";
 
-  const buttonStyle = {
-    background: "lightblue",
-    border: "1px solid",
-    cursor: "pointer",
-    padding: "5px",
-    height: "30px",
-    width: "30px",
-    lineHeight: "2px",
+  const copyFiles = async () => {
+    setDisableStart(true);
+    console.log(filesInfo);
+    let res = await postApi(`macNMobileAndroid/CopyFiles/`, {
+      folderName: folderName,
+      path: path,
+      movingPath: movingPath.currentPath,
+      filesInfo: filesInfo,
+    });
+    if (!res) {
+      console.log("something went wrong");
+    }
+    console.log(res);
+    setDisableStart(false);
   };
 
   return (
@@ -35,6 +42,7 @@ function CopyConfirmation({ path, setPickPath }) {
       style={{
         minWidth: "90%",
         border: "2px solid black",
+        borderRadius: "5px",
         padding: "20px 10px",
         display: "absolute",
         position: "absolute",
@@ -107,7 +115,6 @@ function CopyConfirmation({ path, setPickPath }) {
               movingPath.currentPath.split("/").pop().toString() +
               " files"
             }
-            helperText="Some important text"
             onChange={({ target: { value } }) => setFolderName(value)}
           />
         </FormControl>
@@ -116,8 +123,8 @@ function CopyConfirmation({ path, setPickPath }) {
         <Button
           variant="outlined"
           color="success"
-          onClick={() => console.log(copyingPath())}
-          disabled={folderName === ""}
+          onClick={() => copyFiles()}
+          disabled={folderName === "" || disableStart}
         >
           Start
         </Button>

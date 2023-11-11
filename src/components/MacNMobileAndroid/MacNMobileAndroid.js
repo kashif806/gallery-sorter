@@ -5,7 +5,7 @@ import boxStyle from "../Styles/BoxStyle";
 import paperStyle from "../Styles/PaperStyle";
 import { Button } from "@mui/material";
 import { useEffect } from "react";
-import getApi from "../../api/api.js";
+import { getApi } from "../../api/api.js";
 import AlertComponent from "../AlertComponent/AlertComponent";
 import Contents from "../Contents/Contents";
 import FilesProcessor from "../FilesProcessor/FilesProcessor";
